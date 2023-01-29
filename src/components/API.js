@@ -5,6 +5,7 @@ import LineChart from "./LineChart";
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
   
@@ -171,9 +172,9 @@ export default function API() {
 
 
             <form onSubmit={updateStock}>
-                <h1>Stocks</h1>
+                <h1>Ticker Lookup</h1>
                 <input type="text" value={stockInputText} onChange={updateStockFromInput} />
-                <input type="submit" />
+                <Button type="submit">Submit</Button>
             </form>
 
 

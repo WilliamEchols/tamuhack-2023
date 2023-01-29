@@ -1,4 +1,3 @@
-import { wait } from "@testing-library/user-event/dist/utils";
 import axios from "axios";
 
 import classifyNews from './nlp';
@@ -16,25 +15,25 @@ const sentimentByTicker = (ticker) => {
           'X-RapidAPI-Host': 'fidelity-investments.p.rapidapi.com'
         }
     };
-    axios.request(newsAPI).then(async function (newsResponse) {
+    let value = axios.request(newsAPI).then(async function (newsResponse) {
         // classify news
         let newsArray = newsResponse.data['headlineResults'][0]['headline'].map(item => item['text']);
         var newsScore = await classifyNews(newsArray);
-        console.log('intermediary: ' + newsScore)
-        return Math.round((newsScore + Number.EPSILON) * 100) / 100
+        return newsScore;
 
     }).catch(function (error) {
         console.error(error);
     });
+    return value;
 }
 
-const sentimentBySector = (sector) => {
+const sentimentBySector = async (sector) => {
     let sum = 0;
     for (let i = 0; i < subSectorsObj[sector].length; i++) {
-        sum += sentimentByTicker(subSectorsObj[sector][i])
-        wait(1)
-        console.log(sum)
+        sum += await sentimentByTicker(subSectorsObj[sector][i])
+        await new Promise(resolve => setTimeout(resolve, 300));
     }
+    console.log(sum / subSectorsObj[sector].length)
     return sum / subSectorsObj[sector].length;
 }
 

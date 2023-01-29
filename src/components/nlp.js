@@ -12,16 +12,16 @@ const classifyNews = (newsHeadlineArray) => {
         data: {
           inputs: newsHeadlineArray,
           examples: [
-            {text: 'Dermatologists don\'t like her!', label: 'bad'},
-            {text: 'Hello, open to this?', label: 'bad'},
-            {text: 'I need help please wire me $1000 right now', label: 'bad'},
-            {text: 'Nice to know you ;)', label: 'bad'},
-            {text: 'Please help me?', label: 'bad'},
-            {text: 'Your parcel will be delivered today', label: 'good'},
-            {text: 'Review changes to our Terms and Conditions', label: 'good'},
-            {text: 'Weekly sync notes', label: 'good'},
-            {text: 'Re: Follow up from today’s meeting', label: 'good'},
-            {text: 'Pre-read for tomorrow', label: 'good'}
+            {text: 'Why This May Be A \'Life Changing\' Market Rally; Apple, Fed Meeting Loom As Tesla Run Hits 75%', label: 'good'},
+            {text: 'Amazon, Apple, Alphabet Headline Another Busy Earnings Week', label: 'good'},
+            {text: 'Apple Takes The Cake Again In China As Top Smartphone Seller Amid Odds', label: 'good'},
+            {text: 'Goldman Sachs’ David Solomon latest CEO hit with pay cut', label: 'bad'},
+            {text: 'Apple Stock Climbs Off Lows As Earnings Optimism Builds: 3 Other FAANG Stocks Dominate Earnings Calendar', label: 'bad'},
+            {text: 'Apple Avoids Layoffs Hitting the Rest of Tech, for Now', label: 'good'},
+            {text: 'Man Who Predicted Lehman Crash Makes New Warning', label: 'bad'},
+            {text: 'Apple Could Be Headed for Down Sales Year in Fiscal 2023, Bernstein Analyst Contends', label: 'bad'},
+            {text: 'Elon Musk Cautions Fed On Further Interest Rate Hikes: \'Quite A Serious Danger\' Of Crushing Stock Market', label: 'bad'},
+            {text: 'Nancy Pelosi Lost Big Money on These Stocks — Here Are The Ones To Avoid', label: 'bad'}
           ],
           truncate: 'END'
         }
@@ -30,10 +30,10 @@ const classifyNews = (newsHeadlineArray) => {
     let value = axios
         .request(cohereOptions)
         .then(async function (response) {
-            //console.log(response.data);
+            console.log(response.data);
             let confidenceArray = await response.data['classifications'].map(item => item['confidence'] * (item['prediction'] === 'good' ? 1 : -1) + (item['prediction'] === 'good' ? 0 : 1) );
             var overall = confidenceArray.reduce((partialSum, a) => partialSum + a, 0);
-            return await (overall / newsHeadlineArray.length);
+            return await (overall / newsHeadlineArray.length) * 200;
         })
         .catch(function (error) {
             console.error(error);
