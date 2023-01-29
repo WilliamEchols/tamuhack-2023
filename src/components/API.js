@@ -37,15 +37,7 @@ export default function API() {
             }
         };
 
-        const newsAPI = {
-            method: 'GET',
-            url: 'https://fidelity-investments.p.rapidapi.com/news/list-top',
-            params: {symbol: stockInputText},
-            headers: {
-              'X-RapidAPI-Key': '18da6b6796mshef75c48f2dcd7f8p1dad5djsnd3d4c58dd378',
-              'X-RapidAPI-Host': 'fidelity-investments.p.rapidapi.com'
-            }
-        };
+
     
         // pricing information
         axios.request(fidelityAPI).then(function (response) {
@@ -58,9 +50,19 @@ export default function API() {
             var containerObj = {};
             for (let stockNum = 0; stockNum < obj.length; stockNum++) {
 
+                const newsAPI = {
+                    method: 'GET',
+                    url: 'https://fidelity-investments.p.rapidapi.com/news/list-top',
+                    params: {symbol: obj[stockNum]['identifier']},
+                    headers: {
+                      'X-RapidAPI-Key': '18da6b6796mshef75c48f2dcd7f8p1dad5djsnd3d4c58dd378',
+                      'X-RapidAPI-Host': 'fidelity-investments.p.rapidapi.com'
+                    }
+                };
 
                 // news information
                 axios.request(newsAPI).then(async function (newsResponse) {
+                    
                     let oldNewsObj = newsObj;
                     let newNews = newsResponse.data['headlineResults'];
 
