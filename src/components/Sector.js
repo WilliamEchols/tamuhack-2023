@@ -33,7 +33,7 @@ const sentimentBySector = async (sector) => {
         sum += await sentimentByTicker(subSectorsObj[sector][i])
         await new Promise(resolve => setTimeout(resolve, 300));
     }
-    console.log(sum / subSectorsObj[sector].length)
+    //console.log(sum / subSectorsObj[sector].length)
     return sum / subSectorsObj[sector].length;
 }
 

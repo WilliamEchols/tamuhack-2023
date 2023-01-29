@@ -27,8 +27,8 @@ export default function API() {
             url: 'https://fidelity-investments.p.rapidapi.com/quotes/get-chart',
             params: {
               symbol: stockInputText, // '.DJI,.IXIC,.SPX'
-              startDate: '2022/12/28-15:00:00',
-              endDate: '2023/01/28-15:00:00',
+              startDate: '2022/12/29-15:00:00',
+              endDate: '2023/01/29-15:00:00',
               intraday: 'Y',
               granularity: '1'
             },
