@@ -32,15 +32,6 @@ const lineChartOptions = {
         display: false,
         text: 'Chart.js Line Chart',
       },
-    },
-    scales: {
-        xAxes: [{
-            type: 'time',
-            ticks: {
-                autoSkip: true,
-                maxTicksLimit: 20
-            }
-        }]
     }
 };
 

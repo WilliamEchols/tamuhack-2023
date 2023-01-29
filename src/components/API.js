@@ -8,48 +8,7 @@ import Col from 'react-bootstrap/Col';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
   
-const classifyNews = (newsHeadlineArray) => {
-    const cohereOptions = {
-        method: 'POST',
-        url: 'https://api.cohere.ai/classify',
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-          authorization: 'Bearer vN4sf6wAW4K9xDDSx0fUNDwz1NqHuYTVgMkj1Wx4'
-        },
-        data: {
-          inputs: newsHeadlineArray,
-          examples: [
-            {text: 'Dermatologists don\'t like her!', label: 'bad'},
-            {text: 'Hello, open to this?', label: 'bad'},
-            {text: 'I need help please wire me $1000 right now', label: 'bad'},
-            {text: 'Nice to know you ;)', label: 'bad'},
-            {text: 'Please help me?', label: 'bad'},
-            {text: 'Your parcel will be delivered today', label: 'good'},
-            {text: 'Review changes to our Terms and Conditions', label: 'good'},
-            {text: 'Weekly sync notes', label: 'good'},
-            {text: 'Re: Follow up from today’s meeting', label: 'good'},
-            {text: 'Pre-read for tomorrow', label: 'good'}
-          ],
-          truncate: 'END'
-        }
-    };
-
-    axios
-        .request(cohereOptions)
-        .then(function (response) {
-        console.log(response.data);
-            let confidenceArray = response.data['classifications'].map(item => item['confidence'] * (item['prediction'] === 'good' ? 1 : -1 + 1) );
-            var overall = confidenceArray.reduce((partialSum, a) => partialSum + a, 0);
-            console.log(overall/ newsHeadlineArray.length)
-            return overall / newsHeadlineArray.length;
-        })
-        .catch(function (error) {
-        console.error(error);
-        });
-  }
-
-  
+import classifyNews from './nlp';
 
 export default function API() {
     const [stockInfo, setStockInfo] = useState(null);
@@ -59,7 +18,7 @@ export default function API() {
     const updateStockFromInput = event => setStockInputText(event.target.value);
 
 
-    const updateStock = (e) => {
+    const updateStock = async (e) => {
         e.preventDefault();
         
         const fidelityAPI = {
@@ -101,7 +60,7 @@ export default function API() {
 
 
                 // news information
-                axios.request(newsAPI).then(function (newsResponse) {
+                axios.request(newsAPI).then(async function (newsResponse) {
                     let oldNewsObj = newsObj;
                     let newNews = newsResponse.data['headlineResults'];
 
@@ -110,13 +69,10 @@ export default function API() {
 
                     // classify news
                     let newsArray = oldNewsObj[obj[stockNum]['identifier']][0]['headline'].map(item => item['text']);
-                    var newsScore = classifyNews(newsArray);
-                    console.log(newsScore);
+                    var newsScore = await classifyNews(newsArray);
+                    oldNewsObj[obj[stockNum]['identifier']]['newsScore'] = Math.round((newsScore + Number.EPSILON) * 100) / 100
 
-
-
-
-                    console.log(oldNewsObj);
+                    //console.log(oldNewsObj);
                     setNewsObj(oldNewsObj);
                 }).catch(function (error) {
                     console.error(error);
@@ -201,9 +157,9 @@ export default function API() {
             reformat.push(newObj);
         }
 
-        console.log(reformat);
-        console.log(obj);
-        console.log(data);
+        //console.log(reformat);
+        //console.log(obj);
+        //console.log(data);
         return reformat;
     }
 
@@ -230,6 +186,7 @@ export default function API() {
 
                                 { newsObj[ticker['identifier']] ? 
                                     <>
+                                        <br/><br/>News Score (Sentiment Analysis): {newsObj[ticker['identifier']]['newsScore']}
                                         {newsObj[ticker['identifier']][0]['headline'].slice(0, 3).map(newsArticle => ( 
                                             <p key={newsArticle['resId']}>{newsArticle['text']}</p> 
                                         ))}
