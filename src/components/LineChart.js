@@ -29,8 +29,8 @@ const lineChartOptions = {
         position: 'top',
       },
       title: {
-        display: false,
-        text: 'Chart.js Line Chart',
+        display: true,
+        text: '30 Day Pricing',
       },
     }
 };
